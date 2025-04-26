@@ -5,7 +5,7 @@ import {
 } from './openai';
 
 export interface TransformFromSourceConfig {
-  model: OpenAIConfig;
+  llm: OpenAIConfig;
 }
 
 const TRANSFORMERS = {
@@ -17,10 +17,10 @@ export async function transformFromSource(
   prompt: string,
   config: TransformFromSourceConfig,
 ): Promise<string> {
-  const transformer = TRANSFORMERS[config.model.provider];
+  const transformer = TRANSFORMERS[config.llm.provider];
   if (transformer == null) return source;
 
-  const result = await transformer(source, prompt, config.model);
+  const result = await transformer(source, prompt, config.llm);
   if (result.isErr()) throw result.error;
 
   return result.value;

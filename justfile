@@ -1,3 +1,6 @@
+set export
+set dotenv-load
+
 # List available commands
 [group("general")]
 default:
@@ -17,6 +20,11 @@ lint:
 [group("package")]
 format:
     pnpm run format
+
+# Check preview
+[group("package")]
+preview:
+    pnpm run preview
 
 # Install dependencies
 [group("package")]

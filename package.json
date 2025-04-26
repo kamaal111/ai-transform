@@ -1,6 +1,6 @@
 {
   "name": "ai-transform",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -8,7 +8,8 @@
     "compile": "tsc",
     "lint": "eslint",
     "format": "prettier . --write",
-    "prepare": "husky"
+    "prepare": "husky",
+    "preview": "tsx scripts/preview.ts"
   },
   "keywords": [],
   "author": "Kamaal Farah",
@@ -30,8 +31,10 @@
     "husky": "^9",
     "lint-staged": "^15",
     "prettier": "^3",
+    "tsx": "^4",
     "typescript": "^5",
-    "typescript-eslint": "^8"
+    "typescript-eslint": "^8",
+    "vitest": "^3"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
