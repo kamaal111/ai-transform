@@ -1,3 +1,7 @@
+/**
+ * Custom error class for AI transformation operations.
+ * Extends the native Error class with enhanced cause handling.
+ */
 export class AITransformError extends Error {
   readonly cause: unknown;
 
