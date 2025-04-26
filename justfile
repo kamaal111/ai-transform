@@ -1,5 +1,5 @@
 set export
-set dotenv-load
+# set dotenv-load
 
 PNR := "pnpm run"
 
