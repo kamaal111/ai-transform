@@ -1,30 +1,42 @@
 set export
 set dotenv-load
 
+PNR := "pnpm run"
+
 # List available commands
 [group("general")]
 default:
     just --list --unsorted
 
+# Test package
+[group("package")]
+test:
+    {{ PNR }} test
+
+# Test package with watch
+[group("group")]
+test-watch:
+    {{ PNR }} test:watch
+
 # Compile package
 [group("package")]
 compile:
-    pnpm run compile
+    {{ PNR }} compile
 
 # Lint package
 [group("package")]
 lint:
-    pnpm run lint
+    {{ PNR }} lint
 
 # Format code
 [group("package")]
 format:
-    pnpm run format
+    {{ PNR }} format
 
 # Check preview
 [group("package")]
 preview:
-    pnpm run preview
+    {{ PNR }} preview
 
 # Install dependencies
 [group("package")]
