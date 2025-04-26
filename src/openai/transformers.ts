@@ -10,18 +10,13 @@ import {
 } from './constants';
 import { AITransformError } from '../errors';
 import { tryCatch, tryCatchAsync } from '../utils';
+import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 
 export interface Config {
   provider: typeof OPEN_AI_PROVIDER_NAME;
   model: OpenAIModels;
   apiKey?: string;
 }
-
-const SYSTEM_PROMPT = `
-You are a code-transformation assistant.
-Reply with a JSON object: { "code": "<transformed code here>" }
-Do not include anything else.
-`;
 
 const TransformResponse = z.object({ code: z.string() });
 
@@ -47,15 +42,10 @@ export async function transformFromSource(
     return clientResult.value.chat.completions.create({
       model: config.model,
       messages: [
-        { role: 'system', content: SYSTEM_PROMPT },
+        { role: 'system', content: SYSTEM_TRANSFORM_PROMPT },
         {
           role: 'user',
-          content: [
-            '<<<SOURCE>>>',
-            source.trim(),
-            '<<<INSTRUCTION>>>',
-            prompt.trim(),
-          ].join('\n'),
+          content: buildTransformUserPrompt(source, prompt),
         },
       ],
       temperature: 0,
