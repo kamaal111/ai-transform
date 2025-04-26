@@ -52,8 +52,14 @@ The `config` object requires an `llm` property.
 ### OpenAI Configuration (`provider: 'openai'`)
 
 - `provider`: Must be set to `'openai'`.
-- `apiKey`: Optional to override the OpenAI, by default the library takes `OPENAI_API_KEY` environment variable.
+- `apiKey`: Optional to override the OpenAI API key, by default the library takes `OPENAI_API_KEY` environment variable.
 - `model`: Select your preferred OpenAI model, for example; gpt4.1
+
+### Google Configuration (`provider: 'google'`)
+
+- `provider`: Must be set to `'google'`.
+- `apiKey`: Required Google AI API key.
+- `model`: Select your preferred Google AI model, for example; gemini-2.0-flash
 
 ## Error Handling
 

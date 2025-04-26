@@ -2,7 +2,7 @@ import type { GetValues } from '../types';
 
 export type OpenAIModels = GetValues<typeof OPEN_AI_MODELS>;
 
-export const OPEN_AI_PROVIDER_NAME = 'openai';
+export const PROVIDER_NAME = 'openai';
 
 export const OPEN_AI_MODELS = {
   GPT_4_1: 'gpt-4.1',

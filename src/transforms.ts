@@ -1,20 +1,24 @@
+import { ok, type Result } from 'neverthrow';
+
+import {
+  GOOGLE_PROVIDER_NAME,
+  type GoogleConfig,
+  transformFromSourceWithGoogle,
+} from './google';
 import {
   transformFromSourceWithOpenAI,
   type OpenAIConfig,
   OPEN_AI_PROVIDER_NAME,
 } from './openai';
+import type { AITransformError } from './errors';
 
 /**
  * Configuration interface for the transformFromSource function.
  * Defines the language model provider and related settings.
  */
 export interface TransformFromSourceConfig {
-  llm: OpenAIConfig;
+  llm: OpenAIConfig | GoogleConfig;
 }
-
-const TRANSFORMERS = {
-  [OPEN_AI_PROVIDER_NAME]: transformFromSourceWithOpenAI,
-} as const;
 
 /**
  * Transforms source code or text based on the provided prompt using the configured LLM.
@@ -30,13 +34,25 @@ export async function transformFromSource(
   prompt: string,
   config: TransformFromSourceConfig,
 ): Promise<string> {
-  const transformer = TRANSFORMERS[config.llm.provider];
-  if (transformer == null) return source;
-
-  const result = await transformer(source, prompt, config.llm);
+  const result = await getTransformResult(source, prompt, config);
   if (result.isErr()) throw result.error;
 
   return result.value;
+}
+
+function getTransformResult(
+  source: string,
+  prompt: string,
+  config: TransformFromSourceConfig,
+): Promise<Result<string, AITransformError>> {
+  switch (config.llm.provider) {
+    case OPEN_AI_PROVIDER_NAME:
+      return transformFromSourceWithOpenAI(source, prompt, config.llm);
+    case GOOGLE_PROVIDER_NAME:
+      return transformFromSourceWithGoogle(source, prompt, config.llm);
+    default:
+      return Promise.resolve(ok(source));
+  }
 }
 
 export default { transformFromSource };

@@ -5,7 +5,7 @@ import z from 'zod';
 import { OpenAITransformError } from './errors';
 import {
   OPEN_AI_MODELS_VALUES,
-  type OPEN_AI_PROVIDER_NAME,
+  type PROVIDER_NAME,
   type OpenAIModels,
 } from './constants';
 import type { AITransformError } from '../errors';
@@ -13,7 +13,7 @@ import { tryCatch, tryCatchAsync } from '../utils';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 
 export interface Config {
-  provider: typeof OPEN_AI_PROVIDER_NAME;
+  provider: typeof PROVIDER_NAME;
   model: OpenAIModels;
   apiKey?: string;
 }
