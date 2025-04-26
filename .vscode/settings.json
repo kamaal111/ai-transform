@@ -1,0 +1,6 @@
+{
+  "cSpell.words": ["codemod"],
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
