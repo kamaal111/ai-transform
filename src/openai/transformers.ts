@@ -3,18 +3,14 @@ import { err, ok, type Result } from 'neverthrow';
 import z from 'zod';
 
 import { OpenAITransformError } from './errors';
-import {
-  OPEN_AI_MODELS_VALUES,
-  type PROVIDER_NAME,
-  type OpenAIModels,
-} from './constants';
+import { MODELS_VALUES, type PROVIDER_NAME, type Models } from './constants';
 import type { AITransformError } from '../errors';
 import { tryCatch, tryCatchAsync } from '../utils';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 
 export interface Config {
   provider: typeof PROVIDER_NAME;
-  model: OpenAIModels;
+  model: Models;
   apiKey?: string;
 }
 
@@ -102,7 +98,7 @@ function createClient(config: Config): Result<OpenAI, AITransformError> {
 }
 
 function preChecks(config: Config): Result<void, AITransformError> {
-  if (!OPEN_AI_MODELS_VALUES.includes(config.model)) {
+  if (!MODELS_VALUES.includes(config.model)) {
     return err(new OpenAITransformError('Invalid model provided'));
   }
 
