@@ -1,7 +1,11 @@
 import { transformFromSource } from '../src';
 import { tryCatchAsync } from '../src/utils';
 
-const LLM_CONFIG = { provider: 'openai', model: 'gpt-4.1-nano' } as const;
+const LLM_CONFIG = {
+  provider: 'google',
+  model: 'gemini-2.0-flash',
+  apiKey: process.env.GOOGLE_AI_API_KEY ?? '',
+} as const;
 
 const EXAMPLE_SOURCE = `
 // Calculate the sum of all even numbers in an array

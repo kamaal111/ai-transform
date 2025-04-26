@@ -1,5 +1,5 @@
 {
-  "cSpell.words": ["codemod", "neverthrow"],
+  "cSpell.words": ["codemod", "markdownless", "neverthrow"],
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }

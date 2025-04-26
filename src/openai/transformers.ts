@@ -1,20 +1,18 @@
 import OpenAI from 'openai';
 import { err, ok, type Result } from 'neverthrow';
-import z from 'zod';
 
 import { OpenAITransformError } from './errors';
 import { MODELS_VALUES, type PROVIDER_NAME, type Models } from './constants';
 import type { AITransformError } from '../errors';
 import { tryCatch, tryCatchAsync } from '../utils';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
+import { TransformResponseSchema } from '../schemas';
 
 export interface Config {
   provider: typeof PROVIDER_NAME;
   model: Models;
   apiKey?: string;
 }
-
-const TransformResponse = z.object({ code: z.string() });
 
 export async function transformFromSource(
   source: string,
@@ -74,7 +72,7 @@ async function requestTransformation(
   }
 
   const parsedContentObjectResult = await tryCatchAsync(() => {
-    return TransformResponse.parseAsync(contentObjectResult.value);
+    return TransformResponseSchema.parseAsync(contentObjectResult.value);
   }).mapErr(e => {
     return new OpenAITransformError('Failed to parse AI transformation', {
       cause: e,
