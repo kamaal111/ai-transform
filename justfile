@@ -14,9 +14,14 @@ test:
     {{ PNR }} test
 
 # Test package with watch
-[group("group")]
+[group("package")]
 test-watch:
     {{ PNR }} test:watch
+
+# Test package with coverage
+[group("package")]
+test-cov:
+    {{ PNR }} test:cov
 
 # Compile package
 [group("package")]
