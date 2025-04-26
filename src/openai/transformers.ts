@@ -8,7 +8,7 @@ import {
   type OPEN_AI_PROVIDER_NAME,
   type OpenAIModels,
 } from './constants';
-import { AITransformError } from '../errors';
+import type { AITransformError } from '../errors';
 import { tryCatch, tryCatchAsync } from '../utils';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 
@@ -25,21 +25,27 @@ export async function transformFromSource(
   prompt: string,
   config: Config,
 ): Promise<Result<string, AITransformError>> {
-  if (!OPEN_AI_MODELS_VALUES.includes(config.model)) {
-    return err(new OpenAITransformError('Invalid model provided'));
+  const preChecksResult = preChecks(config);
+  if (preChecksResult.isErr()) {
+    return err(preChecksResult.error);
   }
 
-  const clientResult = tryCatch(
-    () => new OpenAI({ apiKey: config.apiKey }),
-  ).mapErr(
-    e => new OpenAITransformError('Failed to load client', { cause: e }),
-  );
+  const clientResult = createClient(config);
   if (clientResult.isErr()) {
     return err(clientResult.error);
   }
 
+  return requestTransformation(source, prompt, clientResult.value, config);
+}
+
+async function requestTransformation(
+  source: string,
+  prompt: string,
+  client: OpenAI,
+  config: Config,
+): Promise<Result<string, AITransformError>> {
   const completionResult = await tryCatchAsync(() => {
-    return clientResult.value.chat.completions.create({
+    return client.chat.completions.create({
       model: config.model,
       messages: [
         { role: 'system', content: SYSTEM_TRANSFORM_PROMPT },
@@ -83,4 +89,22 @@ export async function transformFromSource(
   }
 
   return ok(parsedContentObjectResult.value.code);
+}
+
+function createClient(config: Config): Result<OpenAI, AITransformError> {
+  const clientResult = tryCatch(
+    () => new OpenAI({ apiKey: config.apiKey }),
+  ).mapErr(
+    e => new OpenAITransformError('Failed to load client', { cause: e }),
+  );
+
+  return clientResult;
+}
+
+function preChecks(config: Config): Result<void, AITransformError> {
+  if (!OPEN_AI_MODELS_VALUES.includes(config.model)) {
+    return err(new OpenAITransformError('Invalid model provided'));
+  }
+
+  return ok();
 }

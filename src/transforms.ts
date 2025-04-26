@@ -4,6 +4,10 @@ import {
   OPEN_AI_PROVIDER_NAME,
 } from './openai';
 
+/**
+ * Configuration interface for the transformFromSource function.
+ * Defines the language model provider and related settings.
+ */
 export interface TransformFromSourceConfig {
   llm: OpenAIConfig;
 }
