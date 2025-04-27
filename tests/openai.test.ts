@@ -6,6 +6,7 @@ import {
   SYSTEM_TRANSFORM_PROMPT,
 } from '../src/prompts';
 import { tryCatchAsync } from '../src/utils/result';
+import { DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '../src/constants';
 
 const TEST_SOURCE = `
 // Calculate the sum of all even numbers in an array
@@ -127,6 +128,7 @@ test('verifies OpenAI client was called with correct parameters', async () => {
   expect(mockOpenAI).toHaveBeenCalledWith({ apiKey: TEST_FAKE_API_KEY });
   expect(mockCompletionsCreate).toHaveBeenCalledWith({
     model: config.model,
+    max_tokens: DEFAULT_MAX_TOKENS,
     messages: [
       {
         role: 'system',
@@ -137,7 +139,7 @@ test('verifies OpenAI client was called with correct parameters', async () => {
         content: buildTransformUserPrompt(TEST_SOURCE, TEST_PROMPT),
       },
     ],
-    temperature: 0,
+    temperature: DEFAULT_TEMPERATURE,
   });
 });
 

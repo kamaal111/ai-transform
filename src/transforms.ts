@@ -31,7 +31,7 @@ type ConfigMap = {
  * Defines the language model provider and related settings.
  */
 export interface TransformFromSourceConfig<
-  Provider extends Providers | undefined,
+  Provider extends Providers | undefined = undefined,
 > {
   llm: Omit<
     OpenAITransformerConfig | GoogleTransformerConfig,

@@ -6,6 +6,7 @@ import {
   SYSTEM_TRANSFORM_PROMPT,
 } from '../src/prompts';
 import { tryCatchAsync } from '../src/utils/result';
+import { DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '../src/constants';
 
 const TEST_SOURCE = `
 // Calculate the sum of all even numbers in an array
@@ -105,7 +106,11 @@ test('verifies Google client was called with correct parameters', async () => {
         parts: [{ text: buildTransformUserPrompt(TEST_SOURCE, TEST_PROMPT) }],
       },
     ],
-    config: { systemInstruction: SYSTEM_TRANSFORM_PROMPT, temperature: 0 },
+    config: {
+      systemInstruction: SYSTEM_TRANSFORM_PROMPT,
+      temperature: DEFAULT_TEMPERATURE,
+      maxOutputTokens: DEFAULT_MAX_TOKENS,
+    },
   });
 });
 

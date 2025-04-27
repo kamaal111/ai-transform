@@ -7,4 +7,5 @@ export {
   MODELS_VALUES as ANTHROPICS_MODELS_VALUES,
   MODELS as ANTHROPICS_MODELS,
   MODELS_VALUES_SET as ANTHROPICS_MODELS_VALUES_SET,
+  type AnthropicsModels,
 } from './constants';

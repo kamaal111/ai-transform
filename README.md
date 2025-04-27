@@ -61,6 +61,12 @@ The `config` object requires an `llm` property.
 - `apiKey`: Optional to override the Google AI API key, by default the library takes `GOOGLE_AI_API_KEY` environment variable.
 - `model`: Select your preferred Google AI model, for example; gemini-2.0-flash
 
+### Anthropics Configuration (`provider: 'anthropics'`)
+
+- `provider`: Must be set to `'anthropics'` or let it be inferred by passing in 1 of the Anthropics models to the `model` property.
+- `apiKey`: Optional to override the Anthropics API key, by default the library takes `ANTHROPIC_API_KEY` environment variable.
+- `model`: Select your preferred Anthropics model, for example; claude-3-7-sonnet-latest
+
 ## Error Handling
 
 The `transformFromSource` function may throw an `AITransformError` if the transformation fails (e.g., due to API errors or issues with the LLM response). It's recommended to wrap the call in a `try...catch` block.

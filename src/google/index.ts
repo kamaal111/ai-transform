@@ -7,4 +7,5 @@ export {
   MODELS_VALUES as GOOGLE_MODELS_VALUES,
   MODELS as GOOGLE_MODELS,
   MODELS_VALUES_SET as GOOGLE_MODELS_VALUES_SET,
+  type GoogleModels,
 } from './constants';
