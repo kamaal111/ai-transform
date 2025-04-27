@@ -1,9 +1,10 @@
-import { GOOGLE_MODELS_VALUES, GOOGLE_PROVIDER_NAME } from '../google';
-import { OPEN_AI_MODELS_VALUES, OPEN_AI_PROVIDER_NAME } from '../openai';
+import {
+  ANTHROPICS_MODELS_VALUES_SET,
+  ANTHROPICS_PROVIDER_NAME,
+} from '../anthropics';
+import { GOOGLE_MODELS_VALUES_SET, GOOGLE_PROVIDER_NAME } from '../google';
+import { OPEN_AI_MODELS_VALUES_SET, OPEN_AI_PROVIDER_NAME } from '../openai';
 import type { Models, Providers } from '../types';
-
-const GOOGLE_MODELS_VALUES_SET = new Set(GOOGLE_MODELS_VALUES);
-const OPEN_AI_MODELS_VALUES_SET = new Set(OPEN_AI_MODELS_VALUES);
 
 export function isSupportedModel(model: string): model is Models {
   if ((GOOGLE_MODELS_VALUES_SET as Set<string>).has(model)) {
@@ -11,6 +12,10 @@ export function isSupportedModel(model: string): model is Models {
   }
 
   if ((OPEN_AI_MODELS_VALUES_SET as Set<string>).has(model)) {
+    return true;
+  }
+
+  if ((ANTHROPICS_MODELS_VALUES_SET as Set<string>).has(model)) {
     return true;
   }
 
@@ -24,6 +29,10 @@ export function modelToProvider(model: string): Providers | null {
 
   if ((OPEN_AI_MODELS_VALUES_SET as Set<string>).has(model)) {
     return OPEN_AI_PROVIDER_NAME;
+  }
+
+  if ((ANTHROPICS_MODELS_VALUES_SET as Set<string>).has(model)) {
+    return ANTHROPICS_PROVIDER_NAME;
   }
 
   return null;

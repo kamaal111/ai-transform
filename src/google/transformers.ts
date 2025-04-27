@@ -4,7 +4,7 @@ import z from 'zod';
 
 import type { AITransformError } from '../errors';
 import {
-  MODELS_VALUES,
+  MODELS_VALUES_SET,
   type GoogleModels,
   type PROVIDER_NAME,
 } from './constants';
@@ -12,11 +12,11 @@ import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 import { GoogleAITransformError } from './errors';
 import { BaseAITransformer } from '../base-transformer';
 import { tryCatchAsync } from '../utils/result';
+import type { BaseConfig } from '../types';
 
-export interface GoogleTransformerConfig {
+export interface GoogleTransformerConfig extends BaseConfig {
   provider: typeof PROVIDER_NAME;
   model: GoogleModels;
-  apiKey?: string;
 }
 
 const EnvSchema = z.object({
@@ -36,7 +36,7 @@ class GoogleTransformer extends BaseAITransformer<
   protected preChecks(
     config: GoogleTransformerConfig,
   ): Result<void, GoogleAITransformError> {
-    if (!MODELS_VALUES.includes(config.model)) {
+    if (!MODELS_VALUES_SET.has(config.model)) {
       return err(new GoogleAITransformError('Invalid model provided'));
     }
 
@@ -71,7 +71,11 @@ class GoogleTransformer extends BaseAITransformer<
             parts: [{ text: buildTransformUserPrompt(source, prompt) }],
           },
         ],
-        config: { systemInstruction: SYSTEM_TRANSFORM_PROMPT, temperature: 0 },
+        config: {
+          systemInstruction: SYSTEM_TRANSFORM_PROMPT,
+          temperature: config.temperature,
+          maxOutputTokens: config.maxTokens,
+        },
       });
     }).mapErr(
       e => new GoogleAITransformError('Failed to get completion', { cause: e }),

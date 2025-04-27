@@ -8,52 +8,48 @@ CLI := "./bin/run.mjs"
 DEFAULT_MODEL := "gemini-2.0-flash"
 
 # List available commands
-[group("general")]
 default:
     just --list --unsorted
 
 # Test package
-[group("package")]
+[group("test")]
 test:
     {{ PNR }} test
 
 # Test package with watch
-[group("package")]
+[group("test")]
 test-watch:
     {{ PNR }} test:watch
 
 # Test package with coverage
-[group("package")]
+[group("test")]
 test-cov:
     {{ PNR }} test:cov
 
 # Compile package
-[group("package")]
 compile:
     {{ PNR }} compile
 
 # Lint package
-[group("package")]
+[group("quality")]
 lint:
     {{ PNR }} lint
 
 # Type check
-[group("package")]
+[group("quality")]
 type-check:
     {{ PNR }} type-check
 
 # Format code
-[group("package")]
 format:
     {{ PNR }} format
 
 # Check code formatting
-[group("package")]
 format-check:
     {{ PNR }} format:check
 
 # Run quality checks
-[group("package")]
+[group("quality")]
 quality: lint format-check type-check
 
 # Preview transformation
@@ -67,12 +63,10 @@ preview-dev model=DEFAULT_MODEL:
     {{ DEV_CLI }} preview {{ model }}
 
 # Install dependencies
-[group("package")]
 install-modules:
     pnpm i
 
 # Bootstrap project
-[group("general")]
 bootstrap: enable-corepack install-modules
 
 # Bootstrap for CI

@@ -1,5 +1,11 @@
 {
-  "cSpell.words": ["codemod", "markdownless", "neverthrow", "transpiling"],
+  "cSpell.words": [
+    "Anthropics",
+    "codemod",
+    "markdownless",
+    "neverthrow",
+    "transpiling"
+  ],
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
   }

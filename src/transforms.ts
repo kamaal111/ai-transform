@@ -13,10 +13,17 @@ import {
 import type { AITransformError } from './errors';
 import type { Models, Providers } from './types';
 import { isSupportedModel, modelToProvider } from './utils/llm';
+import { DEFAULT_CONFIG } from './constants';
+import {
+  ANTHROPICS_PROVIDER_NAME,
+  type AnthropicsTransformerConfig,
+  transformFromSourceWithAnthropics,
+} from './anthropics';
 
 type ConfigMap = {
   google: GoogleTransformerConfig;
   openai: OpenAITransformerConfig;
+  anthropics: AnthropicsTransformerConfig;
 };
 
 /**
@@ -67,14 +74,22 @@ function getTransformResult<Provider extends Providers>(
   switch (provider) {
     case GOOGLE_PROVIDER_NAME:
       return transformFromSourceWithGoogle(source, prompt, {
+        ...DEFAULT_CONFIG,
         ...config.llm,
         provider,
       } as GoogleTransformerConfig);
     case OPEN_AI_PROVIDER_NAME:
       return transformFromSourceWithOpenAI(source, prompt, {
+        ...DEFAULT_CONFIG,
         ...config.llm,
         provider,
       } as OpenAITransformerConfig);
+    case ANTHROPICS_PROVIDER_NAME:
+      return transformFromSourceWithAnthropics(source, prompt, {
+        ...DEFAULT_CONFIG,
+        ...config.llm,
+        provider,
+      } as AnthropicsTransformerConfig);
     default:
       return Promise.resolve(ok(source));
   }

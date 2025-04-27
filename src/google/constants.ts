@@ -10,3 +10,5 @@ export const MODELS = {
 } as const;
 
 export const MODELS_VALUES = Object.values(MODELS);
+
+export const MODELS_VALUES_SET = new Set(MODELS_VALUES);

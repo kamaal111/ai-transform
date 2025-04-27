@@ -3,19 +3,19 @@ import { err, ok, type Result } from 'neverthrow';
 
 import { OpenAITransformError } from './errors';
 import {
-  MODELS_VALUES,
   type PROVIDER_NAME,
   type OpenAIModels,
+  MODELS_VALUES_SET,
 } from './constants';
 import type { AITransformError } from '../errors';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 import { BaseAITransformer } from '../base-transformer';
 import { tryCatch, tryCatchAsync } from '../utils/result';
+import type { BaseConfig } from '../types';
 
-export interface OpenAITransformerConfig {
+export interface OpenAITransformerConfig extends BaseConfig {
   provider: typeof PROVIDER_NAME;
   model: OpenAIModels;
-  apiKey?: string;
 }
 
 class OpenAITransformer extends BaseAITransformer<
@@ -26,7 +26,7 @@ class OpenAITransformer extends BaseAITransformer<
   protected preChecks(
     config: OpenAITransformerConfig,
   ): Result<void, OpenAITransformError> {
-    if (!MODELS_VALUES.includes(config.model)) {
+    if (!MODELS_VALUES_SET.has(config.model)) {
       return err(new OpenAITransformError('Invalid model provided'));
     }
 
@@ -61,7 +61,8 @@ class OpenAITransformer extends BaseAITransformer<
             content: buildTransformUserPrompt(source, prompt),
           },
         ],
-        temperature: 0,
+        temperature: config.temperature,
+        max_tokens: config.maxTokens,
       });
     }).mapErr(
       e => new OpenAITransformError('Failed to get completion', { cause: e }),
