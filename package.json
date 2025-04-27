@@ -20,7 +20,9 @@
   "license": "MIT",
   "packageManager": "pnpm@10.9.0",
   "dependencies": {
+    "@anthropic-ai/sdk": "~0.40",
     "@google/genai": "~0.10",
+    "@oclif/core": "^4",
     "neverthrow": "^8",
     "openai": "^4",
     "zod": "^3"
@@ -36,7 +38,9 @@
     "globals": "^16",
     "husky": "^9",
     "lint-staged": "^15",
+    "oclif": "^4",
     "prettier": "^3",
+    "ts-node": "^10",
     "tsx": "^4",
     "typescript": "^5",
     "typescript-eslint": "^8",
@@ -52,5 +56,14 @@
     "arrowParens": "avoid",
     "printWidth": 80,
     "tabWidth": 2
+  },
+  "bin": {
+    "ai-transform": "./bin/run.js"
+  },
+  "oclif": {
+    "bin": "ai-transform",
+    "commands": "./dist/commands",
+    "dirname": "ai-transform",
+    "topicSeparator": " "
   }
 }
