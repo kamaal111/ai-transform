@@ -209,32 +209,16 @@ test('throws error if chat completions response content is invalid JSON', async 
   );
 });
 
-test('throws error if chat completions response JSON lacks "code" property', async () => {
+test('that if chat completions response JSON lacks "code" property, then return original source', async () => {
   const { transformFromSource } = await setupOpenAIMock({
     createResponse: {
       choices: [{ message: { content: JSON.stringify({ notCode: 'abc' }) } }],
     },
   });
 
-  const result = await tryCatchAsync(() => {
-    return transformFromSource(TEST_SOURCE, TEST_PROMPT, {
-      llm: TEST_LLM_CONFIG,
-    });
+  const result = await transformFromSource(TEST_SOURCE, TEST_PROMPT, {
+    llm: TEST_LLM_CONFIG,
   });
 
-  verifyError(
-    result,
-    expect.anything(),
-    `Failed to parse AI transformation; cause='[
-  {
-    "code": "invalid_type",
-    "expected": "string",
-    "received": "undefined",
-    "path": [
-      "code"
-    ],
-    "message": "Required"
-  }
-]'`,
-  );
+  expect(result).toBe(TEST_SOURCE);
 });

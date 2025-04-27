@@ -53,9 +53,7 @@ async function requestTransformation(
   }).mapErr(
     e => new OpenAITransformError('Failed to get completion', { cause: e }),
   );
-  if (completionResult.isErr()) {
-    return err(completionResult.error);
-  }
+  if (completionResult.isErr()) return err(completionResult.error);
 
   const content = completionResult.value.choices[0]?.message.content;
   if (content == null) {
@@ -67,9 +65,7 @@ async function requestTransformation(
       cause: e,
     });
   });
-  if (contentObjectResult.isErr()) {
-    return err(contentObjectResult.error);
-  }
+  if (contentObjectResult.isErr()) return err(contentObjectResult.error);
 
   const parsedContentObjectResult = await tryCatchAsync(() => {
     return TransformResponseSchema.parseAsync(contentObjectResult.value);
@@ -82,7 +78,7 @@ async function requestTransformation(
     return err(parsedContentObjectResult.error);
   }
 
-  return ok(parsedContentObjectResult.value.code);
+  return ok(parsedContentObjectResult.value.code ?? source);
 }
 
 function createClient(config: Config): Result<OpenAI, AITransformError> {

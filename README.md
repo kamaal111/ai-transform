@@ -58,7 +58,7 @@ The `config` object requires an `llm` property.
 ### Google Configuration (`provider: 'google'`)
 
 - `provider`: Must be set to `'google'`.
-- `apiKey`: Required Google AI API key.
+- `apiKey`: Optional to override the Google AI API key, by default the library takes `GOOGLE_AI_API_KEY` environment variable.
 - `model`: Select your preferred Google AI model, for example; gemini-2.0-flash
 
 ## Error Handling
