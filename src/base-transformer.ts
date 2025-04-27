@@ -2,7 +2,7 @@ import { err, ok, type Result } from 'neverthrow';
 
 import type { AITransformError } from './errors';
 import { TransformResponseSchema } from './schemas';
-import { tryCatch, tryCatchAsync } from './utils';
+import { tryCatch, tryCatchAsync } from './utils/result';
 
 /**
  * Abstract base for AI transformation implementations.

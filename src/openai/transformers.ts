@@ -4,9 +4,9 @@ import { err, ok, type Result } from 'neverthrow';
 import { OpenAITransformError } from './errors';
 import { MODELS_VALUES, type PROVIDER_NAME, type Models } from './constants';
 import type { AITransformError } from '../errors';
-import { tryCatch, tryCatchAsync } from '../utils';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 import { BaseAITransformer } from '../base-transformer';
+import { tryCatch, tryCatchAsync } from '../utils/result';
 
 export interface Config {
   provider: typeof PROVIDER_NAME;

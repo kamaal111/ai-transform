@@ -11,13 +11,25 @@ import {
   OPEN_AI_PROVIDER_NAME,
 } from './openai';
 import type { AITransformError } from './errors';
+import type { Models, Providers } from './types';
+import { isSupportedModel, modelToProvider } from './utils/llm';
+
+type ConfigMap = {
+  google: GoogleConfig;
+  openai: OpenAIConfig;
+};
 
 /**
  * Configuration interface for the transformFromSource function.
  * Defines the language model provider and related settings.
  */
-export interface TransformFromSourceConfig {
-  llm: OpenAIConfig | GoogleConfig;
+export interface TransformFromSourceConfig<
+  Provider extends Providers | undefined,
+> {
+  llm: Omit<OpenAIConfig | GoogleConfig, 'provider' | 'model'> & {
+    provider?: Provider;
+    model: Provider extends Providers ? ConfigMap[Provider]['model'] : Models;
+  };
 }
 
 /**
@@ -29,10 +41,10 @@ export interface TransformFromSourceConfig {
  * @returns A Promise that resolves to the transformed source code or text
  * @throws {AITransformError} When the transformation fails due to API errors or issues with the LLM response
  */
-export async function transformFromSource(
+export async function transformFromSource<Provider extends Providers>(
   source: string,
   prompt: string,
-  config: TransformFromSourceConfig,
+  config: TransformFromSourceConfig<Provider>,
 ): Promise<string> {
   const result = await getTransformResult(source, prompt, config);
   if (result.isErr()) throw result.error;
@@ -40,16 +52,26 @@ export async function transformFromSource(
   return result.value;
 }
 
-function getTransformResult(
+function getTransformResult<Provider extends Providers>(
   source: string,
   prompt: string,
-  config: TransformFromSourceConfig,
+  config: TransformFromSourceConfig<Provider>,
 ): Promise<Result<string, AITransformError>> {
-  switch (config.llm.provider) {
-    case OPEN_AI_PROVIDER_NAME:
-      return transformFromSourceWithOpenAI(source, prompt, config.llm);
+  const { model } = config.llm;
+  if (!isSupportedModel(model)) return Promise.resolve(ok(source));
+
+  const provider = config.llm.provider ?? modelToProvider(model);
+  switch (provider) {
     case GOOGLE_PROVIDER_NAME:
-      return transformFromSourceWithGoogle(source, prompt, config.llm);
+      return transformFromSourceWithGoogle(source, prompt, {
+        ...config.llm,
+        provider,
+      } as GoogleConfig);
+    case OPEN_AI_PROVIDER_NAME:
+      return transformFromSourceWithOpenAI(source, prompt, {
+        ...config.llm,
+        provider,
+      } as OpenAIConfig);
     default:
       return Promise.resolve(ok(source));
   }

@@ -5,14 +5,14 @@ import z from 'zod';
 import type { AITransformError } from '../errors';
 import { MODELS_VALUES, type Models, type PROVIDER_NAME } from './constants';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
-import { tryCatchAsync } from '../utils';
 import { GoogleAITransformError } from './errors';
 import { BaseAITransformer } from '../base-transformer';
+import { tryCatchAsync } from '../utils/result';
 
 export interface Config {
   provider: typeof PROVIDER_NAME;
   model: Models;
-  apiKey: string;
+  apiKey?: string;
 }
 
 const EnvSchema = z.object({
@@ -44,7 +44,7 @@ class GoogleTransformer extends BaseAITransformer<
       return EnvSchema.parseAsync(process.env);
     }).unwrapOr({ GOOGLE_AI_API_KEY: null });
     const ai = new GoogleGenAI({
-      apiKey: config.apiKey ?? env.GOOGLE_AI_API_KEY,
+      apiKey: config.apiKey ?? env.GOOGLE_AI_API_KEY ?? undefined,
     });
 
     return ok(ai);

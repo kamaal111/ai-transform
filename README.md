@@ -51,13 +51,13 @@ The `config` object requires an `llm` property.
 
 ### OpenAI Configuration (`provider: 'openai'`)
 
-- `provider`: Must be set to `'openai'`.
+- `provider`: Must be set to `'openai'` or let it be inferred by passing in 1 of the OpenAI models to the `model` property.
 - `apiKey`: Optional to override the OpenAI API key, by default the library takes `OPENAI_API_KEY` environment variable.
 - `model`: Select your preferred OpenAI model, for example; gpt4.1
 
 ### Google Configuration (`provider: 'google'`)
 
-- `provider`: Must be set to `'google'`.
+- `provider`: Must be set to `'google'` or let it be inferred by passing in 1 of the Google AI models to the `model` property.
 - `apiKey`: Optional to override the Google AI API key, by default the library takes `GOOGLE_AI_API_KEY` environment variable.
 - `model`: Select your preferred Google AI model, for example; gemini-2.0-flash
 

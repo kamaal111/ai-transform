@@ -1,11 +1,11 @@
 import { expect, test, vi, afterEach } from 'vitest';
 import type { Result } from 'neverthrow';
 
-import { tryCatchAsync } from '../src/utils';
 import {
   buildTransformUserPrompt,
   SYSTEM_TRANSFORM_PROMPT,
 } from '../src/prompts';
+import { tryCatchAsync } from '../src/utils/result';
 
 const TEST_SOURCE = `
 // Calculate the sum of all even numbers in an array

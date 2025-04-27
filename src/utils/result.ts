@@ -1,4 +1,4 @@
-import { err, ok, ResultAsync, type Result } from 'neverthrow';
+import { err, ok, type Result, ResultAsync } from 'neverthrow';
 
 export function tryCatch<T>(callback: () => T): Result<T, unknown> {
   let result: ReturnType<typeof callback>;

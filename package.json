@@ -9,11 +9,11 @@
     "test:watch": "vitest",
     "test:cov": "vitest run --coverage",
     "compile": "tsc",
+    "type-check": "tsc --noEmit",
     "lint": "eslint",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
-    "prepare": "husky",
-    "preview": "tsx scripts/preview.ts"
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "Kamaal Farah",

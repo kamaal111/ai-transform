@@ -2,6 +2,10 @@ set export
 set dotenv-load
 
 PNR := "pnpm run"
+DEV_CLI := "./bin/dev.mjs"
+CLI := "./bin/run.mjs"
+
+DEFAULT_MODEL := "gemini-2.0-flash"
 
 # List available commands
 [group("general")]
@@ -33,6 +37,11 @@ compile:
 lint:
     {{ PNR }} lint
 
+# Type check
+[group("package")]
+type-check:
+    {{ PNR }} type-check
+
 # Format code
 [group("package")]
 format:
@@ -45,12 +54,17 @@ format-check:
 
 # Run quality checks
 [group("package")]
-quality: lint format-check
+quality: lint format-check type-check
 
-# Check preview
-[group("package")]
-preview:
-    {{ PNR }} preview
+# Preview transformation
+[group("cli")]
+preview model=DEFAULT_MODEL: compile
+    {{ CLI }} preview {{ model }}
+
+# Preview transformation in dev mode (without transpiling TS)
+[group("cli")]
+preview-dev model=DEFAULT_MODEL:
+    {{ DEV_CLI }} preview {{ model }}
 
 # Install dependencies
 [group("package")]
