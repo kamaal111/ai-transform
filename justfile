@@ -38,6 +38,15 @@ lint:
 format:
     {{ PNR }} format
 
+# Check code formatting
+[group("package")]
+format-check:
+    {{ PNR }} format:check
+
+# Run quality checks
+[group("package")]
+quality: lint format-check
+
 # Check preview
 [group("package")]
 preview:
@@ -51,6 +60,15 @@ install-modules:
 # Bootstrap project
 [group("general")]
 bootstrap: enable-corepack install-modules
+
+# Bootstrap for CI
+[group("ci")]
+[linux]
+bootstrap-ci:
+    sudo apt-get update
+    sudo apt-get install -y zsh
+
+    just bootstrap
 
 [private]
 enable-corepack:
