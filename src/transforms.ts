@@ -1,3 +1,5 @@
+import fs from 'node:fs/promises';
+
 import { ok, type Result } from 'neverthrow';
 
 import {
@@ -10,7 +12,7 @@ import {
   type OpenAITransformerConfig,
   OPEN_AI_PROVIDER_NAME,
 } from './openai';
-import type { AITransformError } from './errors';
+import { AITransformError } from './errors';
 import type { Models, Providers } from './types';
 import { isSupportedModel, modelToProvider } from './utils/llm';
 import { DEFAULT_CONFIG } from './constants';
@@ -19,6 +21,7 @@ import {
   type AnthropicsTransformerConfig,
   transformFromSourceWithAnthropics,
 } from './anthropics';
+import { tryCatchAsync } from './utils/result';
 
 type ConfigMap = {
   google: GoogleTransformerConfig;
@@ -27,10 +30,10 @@ type ConfigMap = {
 };
 
 /**
- * Configuration interface for the transformFromSource function.
+ * Configuration interface for the transform functions.
  * Defines the language model provider and related settings.
  */
-export interface TransformFromSourceConfig<
+export interface TransformConfig<
   Provider extends Providers | undefined = undefined,
 > {
   llm: Omit<
@@ -54,7 +57,7 @@ export interface TransformFromSourceConfig<
 export async function transformFromSource<Provider extends Providers>(
   source: string,
   prompt: string,
-  config: TransformFromSourceConfig<Provider>,
+  config: TransformConfig<Provider>,
 ): Promise<string> {
   const result = await getTransformResult(source, prompt, config);
   if (result.isErr()) throw result.error;
@@ -62,10 +65,34 @@ export async function transformFromSource<Provider extends Providers>(
   return result.value;
 }
 
+/**
+ * Reads source code from a file and transforms it based on the provided prompt using the configured LLM.
+ *
+ * @param filepath - The path to the file containing the source code or text to transform
+ * @param prompt - Instructions for how to transform the source
+ * @param config - Configuration object containing LLM provider settings
+ * @returns A Promise that resolves to the transformed source code or text
+ * @throws {AITransformError} When the file cannot be read or the transformation fails
+ */
+export async function transformFromFile<Provider extends Providers>(
+  filepath: string,
+  prompt: string,
+  config: TransformConfig<Provider>,
+): Promise<string> {
+  const bufferResult = await tryCatchAsync(() => fs.readFile(filepath)).mapErr(
+    e => new AITransformError('Failed to read file', { cause: e }),
+  );
+  if (bufferResult.isErr()) throw bufferResult.error;
+
+  const fileContent = bufferResult.value.toString();
+
+  return transformFromSource(fileContent, prompt, config);
+}
+
 function getTransformResult<Provider extends Providers>(
   source: string,
   prompt: string,
-  config: TransformFromSourceConfig<Provider>,
+  config: TransformConfig<Provider>,
 ): Promise<Result<string, AITransformError>> {
   const { model } = config.llm;
   if (!isSupportedModel(model)) return Promise.resolve(ok(source));
@@ -94,5 +121,3 @@ function getTransformResult<Provider extends Providers>(
       return Promise.resolve(ok(source));
   }
 }
-
-export default { transformFromSource };

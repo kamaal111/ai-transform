@@ -10,7 +10,9 @@ A library for transforming source code or text using Large Language Models (LLMs
 
 ## Usage
 
-The primary function is `transformFromSource`. It takes a source string, a prompt describing the desired transformation, and a configuration object specifying the LLM provider and its settings.
+The library provides two main functions for transformations: `transformFromSource` for working with strings and `transformFromFile` for working with files directly.
+
+### Transform from Source String
 
 ```typescript
 import { transformFromSource } from 'ai-transform';
@@ -26,7 +28,6 @@ const prompt = 'Convert this function to an arrow function';
 const config = {
   llm: {
     provider: 'openai', // Select the preferred AI provider
-    apiKey: process.env.OPENAI_API_KEY, // Optional to override the OpenAI, by default the library takes `OPENAI_API_KEY` environment variable
     model: 'gpt-4.1', // Select preferred model
   },
 };
@@ -40,6 +41,32 @@ try {
     console.log("Hello, world!");
   };
   */
+} catch (error) {
+  console.error('Transformation failed:', error);
+}
+```
+
+### Transform from File
+
+You can also transform code directly from a file:
+
+```typescript
+import { transformFromFile } from 'ai-transform';
+
+const filepath = './src/example.js';
+const prompt = 'Convert all functions to arrow functions';
+
+const config = {
+  llm: {
+    provider: 'openai',
+    model: 'gpt-4.1',
+  },
+};
+
+try {
+  const transformedCode = await transformFromFile(filepath, prompt, config);
+  console.log(transformedCode);
+  // Use the transformed code, e.g., write it back to a file
 } catch (error) {
   console.error('Transformation failed:', error);
 }
