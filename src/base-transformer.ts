@@ -1,8 +1,12 @@
 import { err, ok, type Result } from 'neverthrow';
 
-import type { AITransformError } from './errors';
+import { AITransformError } from './errors';
 import { TransformResponseSchema } from './schemas';
 import { tryCatch, tryCatchAsync } from './utils/result';
+
+interface BaseAITransformerConfigConstraint {
+  model: string;
+}
 
 /**
  * Abstract base for AI transformation implementations.
@@ -10,9 +14,24 @@ import { tryCatch, tryCatchAsync } from './utils/result';
  */
 export abstract class BaseAITransformer<
   ClientType,
-  ConfigType,
+  ConfigType extends BaseAITransformerConfigConstraint,
   ErrorType extends AITransformError,
 > {
+  /**
+   * Set of model identifiers supported by this transformer implementation.
+   * Used for validation in the preChecks method.
+   */
+  protected readonly supportedModels: Set<string>;
+
+  /**
+   * Creates a new transformer instance.
+   *
+   * @param supportedModels - A set of model identifiers that this transformer supports
+   */
+  constructor(supportedModels: Set<string>) {
+    this.supportedModels = supportedModels;
+  }
+
   /**
    * Transform source code using the configured AI provider.
    */
@@ -78,7 +97,13 @@ export abstract class BaseAITransformer<
   /**
    * Run pre-checks on config before attempting transformation.
    */
-  protected abstract preChecks(config: ConfigType): Result<void, ErrorType>;
+  protected preChecks(config: ConfigType): Result<void, AITransformError> {
+    if (!this.supportedModels.has(config.model)) {
+      return err(new AITransformError('Invalid model provided'));
+    }
+
+    return ok();
+  }
 
   /**
    * Create a client for the specific AI provider.

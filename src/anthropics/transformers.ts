@@ -25,16 +25,6 @@ class AnthropicsTransformer extends BaseAITransformer<
   AnthropicsTransformerConfig,
   AnthropicsAITransformError
 > {
-  protected preChecks(
-    config: AnthropicsTransformerConfig,
-  ): Result<void, AnthropicsAITransformError> {
-    if (!MODELS_VALUES_SET.has(config.model)) {
-      return err(new AnthropicsAITransformError('Invalid model provided'));
-    }
-
-    return ok();
-  }
-
   protected async createClient(
     config: AnthropicsTransformerConfig,
   ): Promise<Result<Anthropic, AnthropicsAITransformError>> {
@@ -79,7 +69,7 @@ class AnthropicsTransformer extends BaseAITransformer<
   }
 }
 
-const anthropicsTransformer = new AnthropicsTransformer();
+const anthropicsTransformer = new AnthropicsTransformer(MODELS_VALUES_SET);
 
 export async function transformFromSource(
   source: string,

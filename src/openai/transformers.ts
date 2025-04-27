@@ -1,5 +1,5 @@
 import OpenAI from 'openai';
-import { err, ok, type Result } from 'neverthrow';
+import { err, type Result } from 'neverthrow';
 
 import { OpenAITransformError } from './errors';
 import {
@@ -23,16 +23,6 @@ class OpenAITransformer extends BaseAITransformer<
   OpenAITransformerConfig,
   OpenAITransformError
 > {
-  protected preChecks(
-    config: OpenAITransformerConfig,
-  ): Result<void, OpenAITransformError> {
-    if (!MODELS_VALUES_SET.has(config.model)) {
-      return err(new OpenAITransformError('Invalid model provided'));
-    }
-
-    return ok();
-  }
-
   protected async createClient(
     config: OpenAITransformerConfig,
   ): Promise<Result<OpenAI, OpenAITransformError>> {
@@ -81,7 +71,7 @@ class OpenAITransformer extends BaseAITransformer<
   }
 }
 
-const openaiTransformer = new OpenAITransformer();
+const openaiTransformer = new OpenAITransformer(MODELS_VALUES_SET);
 
 export async function transformFromSource(
   source: string,

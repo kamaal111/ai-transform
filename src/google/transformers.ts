@@ -33,16 +33,6 @@ class GoogleTransformer extends BaseAITransformer<
     return match ? match[1] : null;
   }
 
-  protected preChecks(
-    config: GoogleTransformerConfig,
-  ): Result<void, GoogleAITransformError> {
-    if (!MODELS_VALUES_SET.has(config.model)) {
-      return err(new GoogleAITransformError('Invalid model provided'));
-    }
-
-    return ok();
-  }
-
   protected async createClient(
     config: GoogleTransformerConfig,
   ): Promise<Result<GoogleGenAI, GoogleAITransformError>> {
@@ -93,7 +83,7 @@ class GoogleTransformer extends BaseAITransformer<
   }
 }
 
-const googleTransformer = new GoogleTransformer();
+const googleTransformer = new GoogleTransformer(MODELS_VALUES_SET);
 
 export async function transformFromSource(
   source: string,
