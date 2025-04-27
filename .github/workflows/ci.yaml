@@ -20,9 +20,24 @@ jobs:
         uses: taiki-e/install-action@just
 
       - name: Bootstrap
-        run: |
-          just bootstrap-ci
+        run: just bootstrap-ci
 
       - name: Run quality checks
-        run: |
-          just quality
+        run: just quality
+
+  test:
+    name: Test
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    steps:
+      - name: Git - Checkout
+        uses: actions/checkout@v4
+
+      - name: Install just
+        uses: taiki-e/install-action@just
+
+      - name: Bootstrap
+        run: just bootstrap-ci
+
+      - name: Run tests
+        run: just test-cov

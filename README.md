@@ -27,7 +27,7 @@ const config = {
   llm: {
     provider: 'openai', // Select the preferred AI provider
     apiKey: process.env.OPENAI_API_KEY, // Optional to override the OpenAI, by default the library takes `OPENAI_API_KEY` environment variable
-    model: 'gpt-4.1', // Select OpenAI model
+    model: 'gpt-4.1', // Select preferred model
   },
 };
 
