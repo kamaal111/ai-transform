@@ -62,6 +62,10 @@ preview model=DEFAULT_MODEL: compile
 preview-dev model=DEFAULT_MODEL:
     {{ DEV_CLI }} preview {{ model }}
 
+# Publish package to NPM
+publish: clean-build install-modules compile
+    pnpm publish --access public
+
 # Install dependencies
 install-modules:
     pnpm i
@@ -77,6 +81,12 @@ bootstrap-ci:
     sudo apt-get install -y zsh
 
     just bootstrap
+
+[private]
+clean-build:
+    #!/bin/zsh
+
+    rm -rf ./dist
 
 [private]
 enable-corepack:

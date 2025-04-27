@@ -1,9 +1,13 @@
 {
   "name": "ai-transform",
-  "version": "0.0.1",
-  "description": "",
+  "version": "0.0.5",
+  "description": "A library for transforming source code or text using Large Language Models (LLMs).",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "bin"
+  ],
   "scripts": {
     "test": "vitest run",
     "test:watch": "vitest",
@@ -15,7 +19,16 @@
     "format:check": "prettier . --check",
     "prepare": "husky"
   },
-  "keywords": [],
+  "keywords": [
+    "ai",
+    "transform",
+    "codemod",
+    "openai",
+    "google",
+    "gemini",
+    "anthropics",
+    "claude"
+  ],
   "author": "Kamaal Farah",
   "license": "MIT",
   "packageManager": "pnpm@10.9.0",
@@ -58,7 +71,7 @@
     "tabWidth": 2
   },
   "bin": {
-    "ai-transform": "./bin/run.js"
+    "ai-transform": "./bin/run.mjs"
   },
   "oclif": {
     "bin": "ai-transform",

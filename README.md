@@ -5,7 +5,14 @@ A library for transforming source code or text using Large Language Models (LLMs
 ## Installation
 
 ```bash
-# SOON!
+# PNPM
+pnpm add ai-transform
+
+# Or Yarn
+yarn add ai-transform
+
+# Or NPM
+npm install ai-transform
 ```
 
 ## Usage
