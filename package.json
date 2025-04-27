@@ -1,6 +1,6 @@
 {
   "name": "ai-transform",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "description": "A library for transforming source code or text using Large Language Models (LLMs).",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",

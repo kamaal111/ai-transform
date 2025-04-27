@@ -2,6 +2,7 @@ set export
 set dotenv-load
 
 PNR := "pnpm run"
+PNX := "pnpm exec"
 DEV_CLI := "./bin/dev.mjs"
 CLI := "./bin/run.mjs"
 
@@ -64,7 +65,11 @@ preview-dev model=DEFAULT_MODEL:
 
 # Publish package to NPM
 publish: clean-build install-modules compile
-    pnpm publish --access public
+    #!/bin/zsh
+
+    {{ PNX }} tsx scripts/publish-package-json.ts "${VERSION:-null}"
+
+    pnpm publish --access public --no-git-checks
 
 # Install dependencies
 install-modules:
