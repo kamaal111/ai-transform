@@ -2,7 +2,7 @@ import type { GetValues } from '../types';
 
 export const PROVIDER_NAME = 'google';
 
-export type Models = GetValues<typeof MODELS>;
+export type GoogleModels = GetValues<typeof MODELS>;
 
 export const MODELS = {
   GEMINI_2_0_FLASH: 'gemini-2.0-flash',

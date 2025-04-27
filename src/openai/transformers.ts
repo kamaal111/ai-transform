@@ -2,24 +2,30 @@ import OpenAI from 'openai';
 import { err, ok, type Result } from 'neverthrow';
 
 import { OpenAITransformError } from './errors';
-import { MODELS_VALUES, type PROVIDER_NAME, type Models } from './constants';
+import {
+  MODELS_VALUES,
+  type PROVIDER_NAME,
+  type OpenAIModels,
+} from './constants';
 import type { AITransformError } from '../errors';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 import { BaseAITransformer } from '../base-transformer';
 import { tryCatch, tryCatchAsync } from '../utils/result';
 
-export interface Config {
+export interface OpenAITransformerConfig {
   provider: typeof PROVIDER_NAME;
-  model: Models;
+  model: OpenAIModels;
   apiKey?: string;
 }
 
 class OpenAITransformer extends BaseAITransformer<
   OpenAI,
-  Config,
+  OpenAITransformerConfig,
   OpenAITransformError
 > {
-  protected preChecks(config: Config): Result<void, OpenAITransformError> {
+  protected preChecks(
+    config: OpenAITransformerConfig,
+  ): Result<void, OpenAITransformError> {
     if (!MODELS_VALUES.includes(config.model)) {
       return err(new OpenAITransformError('Invalid model provided'));
     }
@@ -28,7 +34,7 @@ class OpenAITransformer extends BaseAITransformer<
   }
 
   protected async createClient(
-    config: Config,
+    config: OpenAITransformerConfig,
   ): Promise<Result<OpenAI, OpenAITransformError>> {
     const clientResult = tryCatch(
       () => new OpenAI({ apiKey: config.apiKey }),
@@ -43,7 +49,7 @@ class OpenAITransformer extends BaseAITransformer<
     source: string,
     prompt: string,
     client: OpenAI,
-    config: Config,
+    config: OpenAITransformerConfig,
   ): Promise<Result<string, OpenAITransformError>> {
     const completionResult = await tryCatchAsync(() => {
       return client.chat.completions.create({
@@ -79,7 +85,7 @@ const openaiTransformer = new OpenAITransformer();
 export async function transformFromSource(
   source: string,
   prompt: string,
-  config: Config,
+  config: OpenAITransformerConfig,
 ): Promise<Result<string, AITransformError>> {
   return openaiTransformer.transformFromSource(source, prompt, config);
 }

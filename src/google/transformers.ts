@@ -3,15 +3,19 @@ import { GoogleGenAI } from '@google/genai';
 import z from 'zod';
 
 import type { AITransformError } from '../errors';
-import { MODELS_VALUES, type Models, type PROVIDER_NAME } from './constants';
+import {
+  MODELS_VALUES,
+  type GoogleModels,
+  type PROVIDER_NAME,
+} from './constants';
 import { buildTransformUserPrompt, SYSTEM_TRANSFORM_PROMPT } from '../prompts';
 import { GoogleAITransformError } from './errors';
 import { BaseAITransformer } from '../base-transformer';
 import { tryCatchAsync } from '../utils/result';
 
-export interface Config {
+export interface GoogleTransformerConfig {
   provider: typeof PROVIDER_NAME;
-  model: Models;
+  model: GoogleModels;
   apiKey?: string;
 }
 
@@ -21,7 +25,7 @@ const EnvSchema = z.object({
 
 class GoogleTransformer extends BaseAITransformer<
   GoogleGenAI,
-  Config,
+  GoogleTransformerConfig,
   GoogleAITransformError
 > {
   protected processResponseText(text: string): string | null {
@@ -29,7 +33,9 @@ class GoogleTransformer extends BaseAITransformer<
     return match ? match[1] : null;
   }
 
-  protected preChecks(config: Config): Result<void, GoogleAITransformError> {
+  protected preChecks(
+    config: GoogleTransformerConfig,
+  ): Result<void, GoogleAITransformError> {
     if (!MODELS_VALUES.includes(config.model)) {
       return err(new GoogleAITransformError('Invalid model provided'));
     }
@@ -38,7 +44,7 @@ class GoogleTransformer extends BaseAITransformer<
   }
 
   protected async createClient(
-    config: Config,
+    config: GoogleTransformerConfig,
   ): Promise<Result<GoogleGenAI, GoogleAITransformError>> {
     const env = await tryCatchAsync(() => {
       return EnvSchema.parseAsync(process.env);
@@ -54,7 +60,7 @@ class GoogleTransformer extends BaseAITransformer<
     source: string,
     prompt: string,
     client: GoogleGenAI,
-    config: Config,
+    config: GoogleTransformerConfig,
   ): Promise<Result<string, GoogleAITransformError>> {
     const contentResponseResult = await tryCatchAsync(() => {
       return client.models.generateContent({
@@ -88,7 +94,7 @@ const googleTransformer = new GoogleTransformer();
 export async function transformFromSource(
   source: string,
   prompt: string,
-  config: Config,
+  config: GoogleTransformerConfig,
 ): Promise<Result<string, AITransformError>> {
   return googleTransformer.transformFromSource(source, prompt, config);
 }

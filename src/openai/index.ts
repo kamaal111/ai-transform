@@ -1,6 +1,6 @@
 export {
   transformFromSource as transformFromSourceWithOpenAI,
-  type Config as OpenAIConfig,
+  type OpenAITransformerConfig,
 } from './transformers';
 export {
   PROVIDER_NAME as OPEN_AI_PROVIDER_NAME,

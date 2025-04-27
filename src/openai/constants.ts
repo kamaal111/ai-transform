@@ -1,6 +1,6 @@
 import type { GetValues } from '../types';
 
-export type Models = GetValues<typeof MODELS>;
+export type OpenAIModels = GetValues<typeof MODELS>;
 
 export const PROVIDER_NAME = 'openai';
 

@@ -2,12 +2,12 @@ import { ok, type Result } from 'neverthrow';
 
 import {
   GOOGLE_PROVIDER_NAME,
-  type GoogleConfig,
+  type GoogleTransformerConfig,
   transformFromSourceWithGoogle,
 } from './google';
 import {
   transformFromSourceWithOpenAI,
-  type OpenAIConfig,
+  type OpenAITransformerConfig,
   OPEN_AI_PROVIDER_NAME,
 } from './openai';
 import type { AITransformError } from './errors';
@@ -15,8 +15,8 @@ import type { Models, Providers } from './types';
 import { isSupportedModel, modelToProvider } from './utils/llm';
 
 type ConfigMap = {
-  google: GoogleConfig;
-  openai: OpenAIConfig;
+  google: GoogleTransformerConfig;
+  openai: OpenAITransformerConfig;
 };
 
 /**
@@ -26,7 +26,10 @@ type ConfigMap = {
 export interface TransformFromSourceConfig<
   Provider extends Providers | undefined,
 > {
-  llm: Omit<OpenAIConfig | GoogleConfig, 'provider' | 'model'> & {
+  llm: Omit<
+    OpenAITransformerConfig | GoogleTransformerConfig,
+    'provider' | 'model'
+  > & {
     provider?: Provider;
     model: Provider extends Providers ? ConfigMap[Provider]['model'] : Models;
   };
@@ -66,12 +69,12 @@ function getTransformResult<Provider extends Providers>(
       return transformFromSourceWithGoogle(source, prompt, {
         ...config.llm,
         provider,
-      } as GoogleConfig);
+      } as GoogleTransformerConfig);
     case OPEN_AI_PROVIDER_NAME:
       return transformFromSourceWithOpenAI(source, prompt, {
         ...config.llm,
         provider,
-      } as OpenAIConfig);
+      } as OpenAITransformerConfig);
     default:
       return Promise.resolve(ok(source));
   }
