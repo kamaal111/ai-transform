@@ -1,5 +1,4 @@
 import { expect, test, vi, afterEach } from 'vitest';
-import type { Result } from 'neverthrow';
 
 import {
   buildTransformUserPrompt,
@@ -7,21 +6,14 @@ import {
 } from '../src/prompts';
 import { tryCatchAsync } from '../src/utils/result';
 import { DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '../src/constants';
+import {
+  TEST_FAKE_API_KEY,
+  TEST_PROMPT,
+  TEST_SOURCE,
+  TEST_TRANSFORMATION_RESPONSE,
+} from './samples';
+import { verifyError } from './utils';
 
-const TEST_SOURCE = `
-// Calculate the sum of all even numbers in an array
-function sumEvens(arr) {
-  let total = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] % 2 === 0) {
-      total += arr[i];
-    }
-  }
-  return total;
-}
-`;
-const TEST_PROMPT = 'Refactor this to use array methods (filter + reduce)';
-const TEST_FAKE_API_KEY = 'fake-api-key';
 const TEST_LLM_CONFIG = {
   provider: 'openai',
   model: 'gpt-4.1-nano',
@@ -32,14 +24,7 @@ const TEST_CREATE_RESPONSE = {
     {
       message: {
         content: JSON.stringify({
-          code: `
-  // Calculate the sum of all even numbers in an array
-  function sumEvens(arr) {
-    return arr
-      .filter(num => num % 2 === 0)
-      .reduce((total, num) => total + num, 0);
-  }
-  `,
+          code: TEST_TRANSFORMATION_RESPONSE,
         }),
       },
     },
@@ -82,21 +67,6 @@ async function setupOpenAIMock(config: {
   const { transformFromSource } = await import('../src');
 
   return { transformFromSource, mockOpenAI, mockCompletionsCreate };
-}
-
-function verifyError(
-  result: Result<unknown, unknown>,
-  cause: Error | undefined,
-  message: string,
-) {
-  expect(result.isErr()).toBe(true);
-  if (!result.isErr()) throw Error('Already checked if is error');
-
-  expect(result.error).toBeInstanceOf(Error);
-
-  const error = result.error as Error;
-  expect(error.message).toEqual(message);
-  expect(error.cause).toEqual(cause);
 }
 
 afterEach(() => {

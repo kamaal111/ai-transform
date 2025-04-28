@@ -1,5 +1,4 @@
 import { expect, test, vi, afterEach } from 'vitest';
-import type { Result } from 'neverthrow';
 
 import {
   buildTransformUserPrompt,
@@ -7,28 +6,23 @@ import {
 } from '../src/prompts';
 import { tryCatchAsync } from '../src/utils/result';
 import { DEFAULT_MAX_TOKENS, DEFAULT_TEMPERATURE } from '../src/constants';
+import {
+  TEST_FAKE_API_KEY,
+  TEST_PROMPT,
+  TEST_SOURCE,
+  TEST_TRANSFORMATION_RESPONSE,
+} from './samples';
+import { verifyError, withMarkdownJSONTags } from './utils';
 
-const TEST_SOURCE = `
-// Calculate the sum of all even numbers in an array
-function sumEvens(arr) {
-  let total = 0;
-  for (let i = 0; i < arr.length; i++) {
-    if (arr[i] % 2 === 0) {
-      total += arr[i];
-    }
-  }
-  return total;
-}
-`;
-const TEST_PROMPT = 'Refactor this to use array methods (filter + reduce)';
-const TEST_FAKE_API_KEY = 'fake-api-key';
 const TEST_LLM_CONFIG = {
   provider: 'google',
   model: 'gemini-2.0-flash',
   apiKey: TEST_FAKE_API_KEY,
 } as const;
 const TEST_CREATE_RESPONSE = {
-  text: '```json\n{"code": "// Calculate the sum of all even numbers in an array\\nfunction sumEvens(arr) {\\n  return arr\\n    .filter(num => num % 2 === 0)\\n    .reduce((total, num) => total + num, 0);\\n}"}\n```',
+  text: withMarkdownJSONTags(
+    JSON.stringify({ code: TEST_TRANSFORMATION_RESPONSE }),
+  ),
 };
 
 async function setupGoogleMock(config: {
@@ -54,21 +48,6 @@ async function setupGoogleMock(config: {
   const { transformFromSource } = await import('../src');
 
   return { transformFromSource, mockGoogleGenAI, mockGenerateContent };
-}
-
-function verifyError(
-  result: Result<unknown, unknown>,
-  cause: Error | undefined,
-  message: string,
-) {
-  expect(result.isErr()).toBe(true);
-  if (!result.isErr()) throw Error('Already checked if is error');
-
-  expect(result.error).toBeInstanceOf(Error);
-
-  const error = result.error as Error;
-  expect(error.message).toEqual(message);
-  expect(error.cause).toEqual(cause);
 }
 
 afterEach(() => {

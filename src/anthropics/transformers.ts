@@ -14,7 +14,8 @@ import { BaseAITransformer } from '../base-transformer';
 import { tryCatchAsync } from '../utils/result';
 import type { BaseConfig } from '../types';
 
-export interface AnthropicsTransformerConfig extends BaseConfig {
+export interface AnthropicsTransformerConfig
+  extends Omit<BaseConfig, 'maxTokens'> {
   provider: typeof PROVIDER_NAME;
   model: AnthropicsModels;
   maxTokens: number;

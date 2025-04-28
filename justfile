@@ -81,11 +81,14 @@ bootstrap: enable-corepack install-modules
 # Bootstrap for CI
 [group("ci")]
 [linux]
-bootstrap-ci:
+bootstrap-ci: install-zsh bootstrap
+
+# Bootstrap for CI
+[private]
+[linux]
+install-zsh:
     sudo apt-get update
     sudo apt-get install -y zsh
-
-    just bootstrap
 
 [private]
 clean-build:
